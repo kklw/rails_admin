@@ -22,7 +22,24 @@ module RailsAdmin
 
           def resource_url(thumb = false)
             return nil unless (uploader = bindings[:object].send(name)).present?
-            thumb.present? ? uploader.send(thumb).url : uploader.url
+            url_list = []
+            if thumb.present?
+              if uploader.is_a?(Array)
+                uploader.each do |file|
+                  url_list.push(file.send(thumb).url)
+                end
+              else
+                uploader.send(thumb).url
+              end
+            else
+              if uploader.is_a?(Array)
+                uploader.each do |file|
+                  url_list.push(file.url)
+                end
+              else
+                uploader.url
+              end
+            end
           end
         end
       end
